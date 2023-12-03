@@ -2,12 +2,15 @@
 #include "ServoEasing.hpp"
 #include <Arduino.h>
 #include <ArduinoOSCWiFi.h>
+#include "Ultrasonic.h"
 
 #define SERVO1_PIN  5
 #define SERVO2_PIN 18
 #define SERVO3_PIN 19
+#define DC_MOTERPIN 12
 #define SPEED_IN_PIN A0
 #define MODE_ANALOG_INPUT_PIN A3
+Ultrasonic ultrasonic(22);
 
 ServoEasing Servo1;
 ServoEasing Servo2;
@@ -26,6 +29,8 @@ void receiveOSCData() {
     int oscServo2Pos = /* obtain new position from OSC */;
     oscDataReceived = true;
 }
+
+
 
 void performpurupuru(int servo1num, int servo2num) {
     Servo1.setEasingType(EASE_CUBIC_IN_OUT);
@@ -46,6 +51,11 @@ void performpurupuru(int servo1num, int servo2num) {
         delay(movingGap * 1000/servospeed);
     }
 }
+
+void DCmoter(int speed){
+  analogWrite(DC_MOTERPIN, speed);
+}
+
 
 void performservoActions(int servo1Pre, int servo2Pre, int servo1Post, int servo2Post) {
     Servo1.setEasingType(EASE_QUADRATIC_IN_OUT);
@@ -85,6 +95,8 @@ void setup() {
 
 
 void loop() {
+    int RangeInCentimeters = ultrasonic.MeasureInCentimeters();
+    
     if (!oscDataReceived) {
         // If OSC data has not been received, continue performing purupuru
         performpurupuru();
@@ -98,5 +110,7 @@ void loop() {
         // Reset the flag after performing servo actions
         oscDataReceived = false;
     }
+
+
 }
 
