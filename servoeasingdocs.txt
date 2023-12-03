@@ -1,0 +1,193 @@
+Servo1.easeTo(135, 40);  
+引数に、角度、時間（
+Servo1.setEasingType(EASE_QUADRATIC_IN_OUT);
+引数に、EASE_QUARTIC	LITERAL1
+
+
+
+/*
+ * Values for provided EaseTypes
+ * The call style is coded in the upper 2 bits
+ */
+#define CALL_STYLE_DIRECT       0x00 // == IN
+#define CALL_STYLE_IN           0x00
+#define CALL_STYLE_OUT          0x40
+#define CALL_STYLE_IN_OUT       0x80
+#define CALL_STYLE_BOUNCING_OUT_IN  0xC0 // Bouncing has double movement, so double time (half speed) is taken for this modes
+
+#define CALL_STYLE_MASK         0xC0
+#define EASE_TYPE_MASK          0x0F
+
+#define EASE_LINEAR             0x00 // No bouncing available
+
+#if defined(ENABLE_EASE_QUADRATIC)
+#define EASE_QUADRATIC_IN       0x01
+#define EASE_QUADRATIC_OUT      0x41
+#define EASE_QUADRATIC_IN_OUT   0x81
+#define EASE_QUADRATIC_BOUNCING 0xC1
+#endif
+
+#if defined(ENABLE_EASE_CUBIC)
+#define EASE_CUBIC_IN           0x02
+#define EASE_CUBIC_OUT          0x42
+#define EASE_CUBIC_IN_OUT       0x82
+#define EASE_CUBIC_BOUNCING     0xC2
+#endif
+
+#if defined(ENABLE_EASE_QUARTIC)
+#define EASE_QUARTIC_IN         0x03
+#define EASE_QUARTIC_OUT        0x43
+#define EASE_QUARTIC_IN_OUT     0x83
+#define EASE_QUARTIC_BOUNCING   0xC3
+#endif
+
+#if defined(ENABLE_EASE_USER)
+#define EASE_USER_DIRECT        0x06
+#define EASE_USER_IN            0x06
+#define EASE_USER_OUT           0x46
+#define EASE_USER_IN_OUT        0x86
+#define EASE_USER_BOUNCING      0xC6
+#endif
+
+#define EASE_DUMMY_MOVE         0x07 // can be used as delay
+
+#if defined(ENABLE_EASE_SINE)
+#define EASE_SINE_IN            0x08
+#define EASE_SINE_OUT           0x48
+#define EASE_SINE_IN_OUT        0x88
+#define EASE_SINE_BOUNCING      0xC8
+#endif
+
+#if defined(ENABLE_EASE_CIRCULAR)
+#define EASE_CIRCULAR_IN        0x09
+#define EASE_CIRCULAR_OUT       0x49
+#define EASE_CIRCULAR_IN_OUT    0x89
+#define EASE_CIRCULAR_BOUNCING  0xC9
+#endif
+
+#if defined(ENABLE_EASE_BACK)
+#define EASE_BACK_IN            0x0A
+#define EASE_BACK_OUT           0x4A
+#define EASE_BACK_IN_OUT        0x8A
+#define EASE_BACK_BOUNCING      0xCA
+#endif
+
+#if defined(ENABLE_EASE_ELASTIC)
+#define EASE_ELASTIC_IN         0x0B
+#define EASE_ELASTIC_OUT        0x4B
+#define EASE_ELASTIC_IN_OUT     0x8B
+#define EASE_ELASTIC_BOUNCING   0xCB
+#endif
+
+#if defined(ENABLE_EASE_BOUNCE)
+// the coded function is an OUT function
+#define EASE_BOUNCE_IN          0x4C // call OUT function inverse
+#define EASE_BOUNCE_OUT         0x0C // call OUT function direct
+#endif
+
+#if defined(ENABLE_EASE_PRECISION)
+#define EASE_PRECISION_IN       0x0D // Negative bounce for movings from above (go in to origin)
+#define EASE_PRECISION_OUT      0x4D // Positive bounce for movings from below (go out from origin)
+#endif
+
+
+#######################################
+# Syntax Coloring Map for ServoEasing
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+ServoEasing	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+attach	KEYWORD2
+detach	KEYWORD2
+setEasingType	KEYWORD2
+getEasingType	KEYWORD2
+setReverseOperation	KEYWORD2
+setTrim	KEYWORD2
+setTrimMicrosecondsOrUnits	KEYWORD2
+setMaxConstraint	KEYWORD2
+setMinConstraint	KEYWORD2
+setMinMaxConstraint	KEYWORD2
+write	KEYWORD2
+writeMicrosecondsOrUnits	KEYWORD2
+setSpeed	KEYWORD2
+getSpeed	KEYWORD2
+easeTo	KEYWORD2
+easeToD	KEYWORD2
+startEaseTo	KEYWORD2
+startEaseToD	KEYWORD2
+stop	KEYWORD2
+continueWithInterrupts	KEYWORD2
+continueWithoutInterrupts	KEYWORD2
+update	KEYWORD2
+getCurrentAngle	KEYWORD2
+getEndAngle	KEYWORD2
+getEndMicrosecondsOrUnits	KEYWORD2
+getEndMicrosecondsOrUnitsWithTrim	KEYWORD2
+getDeltaMicrosecondsOrUnits	KEYWORD2
+getMillisForCompleteMove	KEYWORD2
+isMoving	KEYWORD2
+isMovingAndCallYield	KEYWORD2
+areInterruptsActive   KEYWORD2
+MicrosecondsToDegree	KEYWORD2
+DegreeToMicroseconds	KEYWORD2
+synchronizeServosAndStartInterrupt	KEYWORD2
+print	KEYWORD2
+printDynamic	KEYWORD2
+printStatic	KEYWORD2
+printEasingType	KEYWORD2
+registerUserEaseInFunction	KEYWORD2
+callEasingFunction	KEYWORD2
+QuadraticEaseIn	KEYWORD2
+CubicEaseIn	KEYWORD2
+QuarticEaseIn	KEYWORD2
+SineEaseIn	KEYWORD2
+CircularEaseIn	KEYWORD2
+BackEaseIn	KEYWORD2
+ElasticEaseIn	KEYWORD2
+EaseOutBounce	KEYWORD2
+
+setSpeedForAllServos	KEYWORD2
+setIntegerDegreeForAllServos	KEYWORD2
+setFloatDegreeForAllServos	KEYWORD2
+setEaseToForAllServos	KEYWORD2
+setEaseToForAllServosSynchronizeAndStartInterrupt	KEYWORD2
+synchronizeAndEaseToArrayPositions	KEYWORD2
+setEaseToForAllServosSynchronizeAndWait	KEYWORD2
+printArrayPositions	KEYWORD2
+isOneServoMoving	KEYWORD2
+stopAllServos	KEYWORD2
+updateAllServos	KEYWORD2
+synchronizeAllServosAndStartInterrupt	KEYWORD2
+setEasingTypeForAllServos	KEYWORD2
+updateAndWaitForAllServosToStop	KEYWORD2
+synchronizeAllServosStartAndWaitForAllServosToStop	KEYWORD2
+delayAndUpdateAndWaitForAllServosToStop	KEYWORD2
+enableServoEasingInterrupt	KEYWORD2
+disableServoEasingInterrupt	KEYWORD2
+areInterruptsActive	KEYWORD2
+InitializeAndCheckI2CConnection	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+INVALID_SERVO	LITERAL1
+EASE_LINEAR	LITERAL1
+EASE_QUADRATIC	LITERAL1
+EASE_CUBIC	LITERAL1
+EASE_QUARTIC	LITERAL1
+EASE_SINE	LITERAL1
+EASE_CIRCULAR	LITERAL1
+EASE_BACK	LITERAL1
+EASE_ELASTIC	LITERAL1
+EASE_BOUNCE	LITERAL1
+EASE_USER	LITERAL1
+EASE_PRECISION	LITERAL1
+EASE_DUMMY_MOVE	LITERAL1
+START_UPDATE_BY_INTERRUPT	LITERAL1
+DO_NOT_START_UPDATE_BY_INTERRUPT	LITERAL1
