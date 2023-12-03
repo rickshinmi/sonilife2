@@ -13,8 +13,6 @@ ServoEasing Servo2;
 
 #define START_DEGREE_VALUE  0
 
-void performpurupuru();
-
 void setup() {
     M5.begin();
     M5.Lcd.printf("START %s from %s\nUsing library version %s\n", __FILE__, __DATE__, VERSION_SERVO_EASING);
@@ -33,7 +31,7 @@ void setup() {
 }
 
 void loop() {
-    performpurupuru();
+    performpurupuru(10, 20);
 }
 
 
@@ -49,10 +47,10 @@ void performpurupuru(int servo1num, int servo2num) {
         Serial.write("pu");
         Servo1.startEaseTo(servo1num + movingGap);
         Servo2.startEaseTo(servo2num + movingGap);
-        delay(movingGap * 1000/servospeed);
+        delay(movingGap * 1000/servoSpeed);
         Serial.write("ru");
         Servo1.startEaseTo(servo1num);
         Servo2.startEaseTo(servo2num);
-        delay(movingGap * 1000/servospeed);
+        delay(movingGap * 1000/servoSpeed);
     }
 }
