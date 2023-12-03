@@ -24,9 +24,6 @@ bool oscDataReceived = false;
 void receiveOSCData() {
     int oscServo1Pos = /* obtain new position from OSC */;
     int oscServo2Pos = /* obtain new position from OSC */;
-
-    servo1CurrentPos = oscServo1Pos;
-    servo2CurrentPos = oscServo2Pos;
     oscDataReceived = true;
 }
 
