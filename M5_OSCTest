@@ -1,0 +1,80 @@
+#include <ArduinoOSCWiFi.h>
+#include <M5Stack.h>
+// #include <ArduinoOSC.h> // you can use this if your borad supports only WiFi or Ethernet
+
+int i; float f; String s;
+
+String ssid = "rikiのiPhone";
+String pwd = "12345678";
+
+//初回接続時にシリアルモニタにて確認し、書き込む
+IPAddress ip(172, 20, 10, 2);
+IPAddress gateway(172, 20, 10, 1);
+IPAddress subnet(255, 255, 255, 240);
+
+
+void setup() {
+  Serial.begin(115200);
+
+  M5.begin();        // Init M5Core.  初始化 M5Core
+  M5.Power.begin();  // Init Power module.  初始化电源模块
+  /* Power chip connected to gpio21, gpio22, I2C device
+    Set battery charging voltage and current
+    If used battery, please call this function in your project */
+  M5.Lcd.print("Hello World");  // Print text on the screen (string)
+  // 在屏幕上打印文本(字符串)
+
+  //入力pin等を設定する
+  pinMode(2, OUTPUT);
+
+  delay(10);
+
+  Serial.println();
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
+  // WiFi
+  WiFi.begin(ssid, pwd);
+  WiFi.config(ip, gateway, subnet);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+
+  M5.Lcd.println("");
+  M5.Lcd.println("WiFi connected.");
+  M5.Lcd.println("IP address: ");
+  M5.Lcd.println(WiFi.localIP());
+  M5.Lcd.println("Gateway address: ");
+  M5.Lcd.println(WiFi.gatewayIP());
+  M5.Lcd.println("Subnet address: ");
+  M5.Lcd.println(WiFi.subnetMask());
+
+
+  OscWiFi.subscribe(9003, "/light1/servo1/angle", [&](int i) //port9003の/led1でbangを受け取ったら、実行される
+  {
+    M5.Lcd.fillRect(random(100), random(100), i, 50, BLUE);  // Draw a blue rectangle 50x50 at (x,y)
+    delay(1000);            //在（x,y）处画 长宽为50x50的蓝色矩形
+  });
+
+
+  OscWiFi.subscribe(9003, "/light1/servo1/velocity", [](int i)
+  {
+    M5.Lcd.drawCircle(random(100), random(100), i, RED);  // Draw a red circle of radius 50 at (x,y)
+    delay(1000);             //在（x,y）处画 半径为50的红色圆线圈
+  });
+
+
+  // デフォルト毎秒30回で、OSCパケットを定期的に送信し続ける
+  OscWiFi.publish("127.0.0.1", 9002, "/publish/value", i, f, s); //任意のIPアドレス及びポート等を指定
+
+  //定期的ではなく、単発で送るならこちら
+  //    OscWiFi.send("127.0.0.1", 9002, "/send", 1, 2.2, "hello");
+}
+
+void loop() {
+  OscWiFi.update(); // 自動的に送受信するために必須
+}
