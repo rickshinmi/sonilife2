@@ -44,21 +44,21 @@ void sendOSCData(int d) {
 //}
 
 void performpurupuru(int servo1num, int servo2num) {
-    Servo1.setEasingType(EASE_CUBIC_IN_OUT);
-    Servo2.setEasingType(EASE_CUBIC_IN_OUT);
-    int servoSpeed = 50;
-    int movingGap = 35;
+    Servo1.setEasingType(EASE_SINE_IN_OUT);
+    Servo2.setEasingType(EASE_SINE_IN_OUT);
+    float servoSpeed = 31.;
+    float movingGap = 35.;
 
     setSpeedForAllServos(servoSpeed);
     
     Serial.write("pu");
     Servo1.startEaseTo(servo1num + movingGap);
     Servo2.startEaseTo(servo2num + movingGap);
-    delay(movingGap * 1000/(servoSpeed* 2));
+    delay(movingGap * 1000./servoSpeed);
     Serial.write("ru");
     Servo1.startEaseTo(servo1num);
     Servo2.startEaseTo(servo2num);
-    delay(movingGap * 1000/(servoSpeed* 2));
+    delay(movingGap * 1000./servoSpeed);
 }
 
 void performservoActions(int servo1Pre, int servo2Pre, int servo1Post, int servo2Post) {
