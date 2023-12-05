@@ -57,6 +57,7 @@ void oscConnect() {
 
     OscWiFi.subscribe(port, "/light2/servo1/angle", [&](int i) {
         oscServo1Pos = i;
+        Serial.print(i);
         oscDataReceived = true;
         delay(10);
     });
