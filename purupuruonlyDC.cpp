@@ -77,11 +77,19 @@ void DCmotor(int speed) {
     analogWrite(DC_MOTOR_PIN, speed);
 }
 
+void nonBlockingDelay(unsigned long interval) {
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+  }
+}
+
 void loop() {
     OscWiFi.update();
 
     if (oscDataReceived) {
         DCmotor(oscServo1Pos);
+        nonBlockingDelay(50000);
         lastOscDataTime = millis();
         oscDataReceived = false;
     } else {
@@ -92,3 +100,4 @@ void loop() {
     Serial.println("servopos"+oscServo1Pos);
     
 }
+
