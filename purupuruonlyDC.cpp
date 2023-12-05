@@ -89,6 +89,6 @@ void loop() {
             DCmotor(60);
         }
     }
-    Serial.print(oscServo1Pos);
+    Serial.print("servopos"+oscServo1Pos);
     
 }
