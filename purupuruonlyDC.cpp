@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include <ArduinoOSCWiFi.h>
 
-const int DC_MOTOR_PIN = 22;   // Assuming servo1 is connected to pin 2
+const int DC_MOTOR_PIN = 5;   // Assuming servo1 is connected to pin 2
 const int DIRECTION_PIN = 21; // Assuming a direction pin for the motor
 const int START_DEGREE_VALUE = 0;
 const int DEFAULT_MICROSECONDS_FOR_0_DEGREE = 1000;
