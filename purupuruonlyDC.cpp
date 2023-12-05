@@ -70,13 +70,6 @@ void setup() {
     WiFi.begin(ssid, pwd);
     oscConnect();
 
-    if (Servo1.attach(SERVO1_PIN, START_DEGREE_VALUE, DEFAULT_MICROSECONDS_FOR_0_DEGREE, DEFAULT_MICROSECONDS_FOR_180_DEGREE) ==
-        INVALID_SERVO) {
-        M5.Lcd.println("Error attaching servo");
-        while (true) {
-            delay(1000);
-        }
-    }
 
     pinMode(DC_MOTOR_PIN, OUTPUT);
     pinMode(DIRECTION_PIN, OUTPUT);
@@ -95,7 +88,9 @@ void loop() {
         oscDataReceived = false;
     } else {
         if (millis() - lastOscDataTime > 30000) {
-            DCmoter(60);
+            DCmotor(60);
         }
     }
+    Serial.print(oscServo1Pos);
+    
 }
