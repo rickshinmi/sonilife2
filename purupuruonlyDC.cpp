@@ -2,9 +2,8 @@
 #include <Arduino.h>
 #include <ArduinoOSCWiFi.h>
 
-const int DC_MOTOR_PIN = 3; // Motor driver pin
-const int SERVO1_PIN = 2;   // Assuming servo1 is connected to pin 2
-const int DIRECTION_PIN = 4; // Assuming a direction pin for the motor
+const int DC_MOTOR_PIN = 22;   // Assuming servo1 is connected to pin 2
+const int DIRECTION_PIN = 21; // Assuming a direction pin for the motor
 const int START_DEGREE_VALUE = 0;
 const int DEFAULT_MICROSECONDS_FOR_0_DEGREE = 1000;
 const int DEFAULT_MICROSECONDS_FOR_180_DEGREE = 2000;
@@ -22,8 +21,6 @@ IPAddress subnet(255, 255, 255, 240);
 
 // Define a timer variable
 unsigned long lastOscDataTime = 0;
-
-WiFiUDP Udp;
 
 void sendOSCData(int d) {
     OscWiFi.send("172.20.10.3", 5556, "/distance", d);
