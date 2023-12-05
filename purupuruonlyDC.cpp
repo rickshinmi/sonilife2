@@ -54,7 +54,7 @@ void oscConnect() {
 
     OscWiFi.subscribe(port, "/light2/servo1/angle", [&](int i) {
         oscServo1Pos = i;
-        Serial.print(i);
+        Serial.println(i);
         oscDataReceived = true;
         delay(10);
     });
@@ -89,6 +89,6 @@ void loop() {
             DCmotor(60);
         }
     }
-    Serial.print("servopos"+oscServo1Pos);
+    Serial.println("servopos"+oscServo1Pos);
     
 }
