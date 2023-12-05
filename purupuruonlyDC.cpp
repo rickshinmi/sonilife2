@@ -19,9 +19,10 @@ IPAddress ip(172, 20, 10, 4);
 IPAddress gateway(172, 20, 10, 1);
 IPAddress subnet(255, 255, 255, 240);
 
+
 // Define a timer variable
 unsigned long lastOscDataTime = 0;
-
+unsigned long previousMillis = 0;
 void sendOSCData(int d) {
     OscWiFi.send("172.20.10.3", 5556, "/distance", d);
 }
