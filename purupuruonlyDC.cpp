@@ -90,7 +90,7 @@ void loop() {
 
     if (oscDataReceived) {
         DCmotor(oscServo1Pos);
-        nonBlockingDelay(50000);
+        delay(5000);
         lastOscDataTime = millis();
         oscDataReceived = false;
     } else {
