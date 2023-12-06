@@ -23,7 +23,6 @@ int servo1CurrentPos = 0;
 int servo2CurrentPos = 0;
 int oscServo1Pos = 0;
 int oscServo2Pos = 0;
-int speed = 40;
 int movingGap = 5;
 
 unsigned long previousMillis = 0;
@@ -55,6 +54,7 @@ void sendOSCData(int d) {
 void performpurupuru(int servo1num, int servo2num, int movingGap) {
     Servo1.setEasingType(EASE_SINE_IN_OUT);
     Servo2.setEasingType(EASE_SINE_IN_OUT);
+    int servoSpeed = 40;
 
     setSpeedForAllServos(servoSpeed);
     
@@ -124,6 +124,7 @@ void oscConnect()
   OscWiFi.subscribe(port, "/light3/servo2/angle", [&](int i)
   {
     movingGap = i; //値をoscServo2Posに代入
+    oscServo1Pos = i;
     oscDataReceived = true; 
     delay(10);             
   });
@@ -178,7 +179,6 @@ void loop() {
   Serial.println(servo2CurrentPos);
   if (!oscDataReceived) {
       // If OSC data has not been received, continue performing purupuru
-      performpurupuru(servo1CurrentPos, servo1CurrentPos, movingGap);
   } else {
       // Call receiveOSCData to get the new positions
       // receiveOSCData();
@@ -186,6 +186,7 @@ void loop() {
         
       // Perform servo actions with new positions
       performservoActions(servo1CurrentPos, servo2CurrentPos, oscServo1Pos, oscServo2Pos);
+      performpurupuru(servo1CurrentPos, servo1CurrentPos, movingGap);
 
       // Reset the flag after performing servo actions
       oscDataReceived = false;
