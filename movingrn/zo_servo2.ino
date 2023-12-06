@@ -75,7 +75,14 @@ void setup() {
 }
 
 void DCmotor(int speed) {
-    analogWrite(DC_MOTOR_PIN, speed);
+    if (speed == 0) {
+        for (int i = 100; i >= 0; --i) {
+            analogWrite(DC_MOTOR_PIN, i);
+            delay(50); // 適切な遅延時間を設定してください
+        }
+    } else {
+        analogWrite(DC_MOTOR_PIN, speed);
+    }
 }
 
 void nonBlockingDelay(unsigned long interval) {
@@ -83,6 +90,20 @@ void nonBlockingDelay(unsigned long interval) {
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
   }
+}
+
+void DCmotorWithUpDown() {
+    while (true) {
+        for (int i = 0; i <= 255; ++i) {
+            analogWrite(DC_MOTOR_PIN, i);
+            delay(10); // 適切な遅延時間を設定してください
+        }
+        
+        for (int i = 255; i >= 0; --i) {
+            analogWrite(DC_MOTOR_PIN, i);
+            delay(10); // 適切な遅延時間を設定してください
+        }
+    }
 }
 
 void loop() {
@@ -93,10 +114,7 @@ void loop() {
         lastOscDataTime = millis();
         oscDataReceived = false;
     } else {
-        if (millis() - lastOscDataTime > 30000) {
-            DCmotor(130);
-        }
+      DCmotorWithUpDown();
     }
     
 }
-
