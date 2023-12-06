@@ -2,10 +2,16 @@
 #include "ServoEasing.hpp"
 #include <Arduino.h>
 #include <ArduinoOSCWiFi.h>
+#include <vector>
+
+// Declare data_list as a global variable
+std::vector<int> data_list;
+
 
 #define SERVO1_PIN  5
 #define SERVO2_PIN 18
 #define SERVO3_PIN 19
+#define DC_MOTERPIN 12
 #define SPEED_IN_PIN A0
 #define MODE_ANALOG_INPUT_PIN A3
 
@@ -17,24 +23,26 @@ int servo1CurrentPos = 0;
 int servo2CurrentPos = 0;
 int oscServo1Pos = 0;
 int oscServo2Pos = 0;
+int speed = 40;
 
+unsigned long previousMillis = 0;
 // Flag to indicate whether OSC data has been received
 bool oscDataReceived = false;
 
 String ssid = "rikiのiPhone";
 String pwd = "12345678";
-int port = 6668;
+int port = 6666;
 
 
 
 //初回接続時にシリアルモニタにて確認し、書き込む
-IPAddress ip(172, 20, 10, 5);
+IPAddress ip(172, 20, 10, 2);
 IPAddress gateway(172, 20, 10, 1);
 IPAddress subnet(255, 255, 255, 240);
 
 //引数にM4Lに送信したい値を入れて呼び出すと送信される
 void sendOSCData(int d) {
-    OscWiFi.send("172.20.10.3", 5557, "/distance", d);
+    OscWiFi.send("172.20.10.3", 5555, "/distance", d);
 }
 
 //void receiveOSCData() {
@@ -43,11 +51,10 @@ void sendOSCData(int d) {
     //oscDataReceived = true;
 //}
 
-void performpurupuru(int servo1num, int servo2num) {
+void performpurupuru(int servo1num, int servo2num, int servoSpeed) {
     Servo1.setEasingType(EASE_SINE_IN_OUT);
     Servo2.setEasingType(EASE_SINE_IN_OUT);
-    float servoSpeed = 37.;
-    float movingGap = 40.;
+    float movingGap = 5.;
 
     setSpeedForAllServos(servoSpeed);
     
@@ -64,7 +71,7 @@ void performpurupuru(int servo1num, int servo2num) {
 void performservoActions(int servo1Pre, int servo2Pre, int servo1Post, int servo2Post) {
     Servo1.setEasingType(EASE_QUADRATIC_IN_OUT);
     Servo2.setEasingType(EASE_QUADRATIC_IN_OUT);
-    int servoSpeed = 70;
+    int servoSpeed = 47;
     int movingGap1 = servo1Pre - servo1Post;
     int movingGap2 = servo2Pre - servo2Post;
 
@@ -106,7 +113,7 @@ void oscConnect()
   Serial.println("Subnet address: ");
   Serial.println(WiFi.subnetMask());
 
-  OscWiFi.subscribe(port, "/light3/servo1/angle", [&](int i) //port(6666)の"/light1/servo1/angleでサーボの値を受け取る
+  OscWiFi.subscribe(port, "/light1/servo1/angle", [&](int i)
   {
     oscServo1Pos = i; //値をoscServo1Posに代入
     oscDataReceived = true;
@@ -114,9 +121,9 @@ void oscConnect()
   });
 
 
-  OscWiFi.subscribe(port, "/light3/servo2/angle", [&](int i) //port(6666)の"/light1/servo2/angleでサーボの値を受け取る
+  OscWiFi.subscribe(port, "/light1/servo2/angle", [&](int i)
   {
-    oscServo2Pos = i; //値をoscServo2Posに代入
+    speed = i; //値をoscServo2Posに代入
     oscDataReceived = true; 
     delay(10);             
   });
@@ -142,6 +149,25 @@ void setup() {
 }
 
 
+void nonBlockingDelay(unsigned long interval) {
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+  }
+}
+
+int calculateAverage(const std::vector<int>& data) {
+    int sum = 0;
+    for (int value : data) {
+        sum += value;
+    }
+    return data.empty() ? 0 : sum / data.size();
+}
+
+
+
+
+
 void loop() {
   OscWiFi.update(); // 自動的に送受信するために必須
   Serial.println();
@@ -152,7 +178,7 @@ void loop() {
   Serial.println(servo2CurrentPos);
   if (!oscDataReceived) {
       // If OSC data has not been received, continue performing purupuru
-      performpurupuru(servo1CurrentPos, servo2CurrentPos);
+      performpurupuru(servo1CurrentPos, servo1CurrentPos, speed);
   } else {
       // Call receiveOSCData to get the new positions
       // receiveOSCData();
