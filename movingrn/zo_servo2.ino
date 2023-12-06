@@ -43,6 +43,7 @@ void oscConnect() {
     M5.Lcd.println(WiFi.gatewayIP());
     M5.Lcd.println("Subnet address: ");
     M5.Lcd.println(WiFi.subnetMask());
+    M5.Lcd.println(oscServo1Pos);
 
     Serial.println("");
     Serial.println("WiFi connected.");
