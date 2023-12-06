@@ -23,6 +23,7 @@ int servo1CurrentPos = 0;
 int servo2CurrentPos = 0;
 int oscServo1Pos = 0;
 int oscServo2Pos = 0;
+int speed = 40;
 int movingGap = 5;
 
 unsigned long previousMillis = 0;
@@ -54,7 +55,6 @@ void sendOSCData(int d) {
 void performpurupuru(int servo1num, int servo2num, int movingGap) {
     Servo1.setEasingType(EASE_SINE_IN_OUT);
     Servo2.setEasingType(EASE_SINE_IN_OUT);
-    int servoSpeed = 40;
 
     setSpeedForAllServos(servoSpeed);
     
@@ -113,7 +113,7 @@ void oscConnect()
   Serial.println("Subnet address: ");
   Serial.println(WiFi.subnetMask());
 
-  OscWiFi.subscribe(port, "/light1/servo1/angle", [&](int i)
+  OscWiFi.subscribe(port, "/light3/servo1/angle", [&](int i)
   {
     oscServo1Pos = i; //値をoscServo1Posに代入
     oscDataReceived = true;
@@ -121,7 +121,7 @@ void oscConnect()
   });
 
 
-  OscWiFi.subscribe(port, "/light1/servo2/angle", [&](int i)
+  OscWiFi.subscribe(port, "/light3/servo2/angle", [&](int i)
   {
     movingGap = i; //値をoscServo2Posに代入
     oscDataReceived = true; 
