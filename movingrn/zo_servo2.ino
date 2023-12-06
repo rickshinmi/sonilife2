@@ -94,8 +94,9 @@ void loop() {
         oscDataReceived = false;
     } else {
         if (millis() - lastOscDataTime > 30000) {
-            DCmotor(60);
+            DCmotor(130);
         }
     }
     
 }
+
