@@ -2,12 +2,20 @@
 #include "ServoEasing.hpp"
 #include <Arduino.h>
 #include <ArduinoOSCWiFi.h>
+#include "Ultrasonic.h"
+#include <vector>
+
+// Declare data_list as a global variable
+std::vector<int> data_list;
+
 
 #define SERVO1_PIN  5
 #define SERVO2_PIN 18
 #define SERVO3_PIN 19
+#define DC_MOTERPIN 12
 #define SPEED_IN_PIN A0
 #define MODE_ANALOG_INPUT_PIN A3
+Ultrasonic ultrasonic(22);
 
 ServoEasing Servo1;
 ServoEasing Servo2;
@@ -18,6 +26,7 @@ int servo2CurrentPos = 0;
 int oscServo1Pos = 0;
 int oscServo2Pos = 0;
 
+unsigned long previousMillis = 0;
 // Flag to indicate whether OSC data has been received
 bool oscDataReceived = false;
 
@@ -46,8 +55,8 @@ void sendOSCData(int d) {
 void performpurupuru(int servo1num, int servo2num) {
     Servo1.setEasingType(EASE_SINE_IN_OUT);
     Servo2.setEasingType(EASE_SINE_IN_OUT);
-    float servoSpeed = 40.;
-    float movingGap = 35.;
+    float servoSpeed = 70.;
+    float movingGap = 5.;
 
     setSpeedForAllServos(servoSpeed);
     
@@ -142,8 +151,45 @@ void setup() {
 }
 
 
+void nonBlockingDelay(unsigned long interval) {
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+  }
+}
+
+int calculateAverage(const std::vector<int>& data) {
+    int sum = 0;
+    for (int value : data) {
+        sum += value;
+    }
+    return data.empty() ? 0 : sum / data.size();
+}
+
+
+
+void sendAverage(){
+    int RangeInCentimeters = ultrasonic.MeasureInCentimeters();
+  Serial.print("current_value");
+    Serial.println(RangeInCentimeters);
+
+    data_list.push_back(RangeInCentimeters);
+        // リストが30個以上になったら古い値から削除
+        if (data_list.size() > 30) {
+            data_list.erase(data_list.begin());
+        }
+        // 平均値を計算
+        int average_centimeters = calculateAverage(data_list);
+        Serial.print("average_centimeters");
+        Serial.println(average_centimeters);
+        sendOSCData(average_centimeters);
+        nonBlockingDelay(50000);
+}
+
+
 void loop() {
   OscWiFi.update(); // 自動的に送受信するために必須
+  sendAverage();
   Serial.println();
   Serial.print(oscDataReceived);
   Serial.print(" ");
