@@ -42,23 +42,21 @@ for (int i = 0; i < numIterations; ++i) {
 }
 
 void DCmotorWithUpDown() {
-  int randomRepeats = random(5, 10);  // Generate a random number of repeats between 5 and 20
+  int randomRepeats = random(2, 7);  // Generate a random number of repeats between 5 and 20
 
   for (int i = 0; i < randomRepeats; ++i) {
     analogWrite(DC_MOTOR_PIN, (random(100, 255)));
     Serial.println("movin");
     delay(random(500, 4000));
-    analogWrite(DC_MOTOR_PIN, 80);
+    analogWrite(DC_MOTOR_PIN, 160);
     delay(1000);
-    analogWrite(DC_MOTOR_PIN, 60);
+    analogWrite(DC_MOTOR_PIN, 140);
     delay(1000);
-    analogWrite(DC_MOTOR_PIN, 20);
+    analogWrite(DC_MOTOR_PIN, 100);
     delay(1000);
-    analogWrite(DC_MOTOR_PIN, 0);
+    analogWrite(DC_MOTOR_PIN, 100);
     delay(random(500, 4000));
   }
-
-  delay(5000);
   renda();
 }
 
