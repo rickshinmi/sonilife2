@@ -99,6 +99,7 @@ void DCmotorWithUpDown() {
   for (int i = 0; i < randomRepeats; ++i) {
     analogWrite(DC_MOTOR_PIN, 100);
     delay(100);
+    analogWrite(DC_MOTOR_PIN, 0);
   }
 
   delay(5000);
