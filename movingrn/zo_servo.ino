@@ -3,11 +3,6 @@
 #include <Arduino.h>
 #include <ArduinoOSCWiFi.h>
 #include "Ultrasonic.h"
-#include <vector>
-
-// Declare data_list as a global variable
-std::vector<int> data_list;
-
 
 #define SERVO1_PIN  5
 #define SERVO2_PIN 18
@@ -25,120 +20,45 @@ int servo1CurrentPos = 0;
 int servo2CurrentPos = 0;
 int oscServo1Pos = 0;
 int oscServo2Pos = 0;
-int speed = 40;
 
-unsigned long previousMillis = 0;
 // Flag to indicate whether OSC data has been received
 bool oscDataReceived = false;
 
-String ssid = "rikiのiPhone";
-String pwd = "12345678";
-int port = 6666;
 
-
-
-//初回接続時にシリアルモニタにて確認し、書き込む
-IPAddress ip(172, 20, 10, 2);
-IPAddress gateway(172, 20, 10, 1);
-IPAddress subnet(255, 255, 255, 240);
-
-//引数にM4Lに送信したい値を入れて呼び出すと送信される
-void sendOSCData(int d) {
-    OscWiFi.send("172.20.10.3", 5555, "/distance", d);
-}
-
-//void receiveOSCData() {
-    //oscServo1Pos = 10/* obtain new position from OSC */;
-    //oscServo2Pos = 20/* obtain new position from OSC */;
-    //oscDataReceived = true;
-//}
-
-void performpurupuru(int servo1num, int servo2num, int servoSpeed) {
-    Servo1.setEasingType(EASE_SINE_IN_OUT);
-    Servo2.setEasingType(EASE_SINE_IN_OUT);
-    float movingGap = 5.;
+void performpurupuru(int servo1num, int servo2num) {
+    Servo1.setEasingType(EASE_QUADRATIC_OUT);
+    Servo2.setEasingType(EASE_QUADRATIC_OUT);
+    int servoSpeed = 20;
+    int movingGap = random(50,90);
+    int movingGapver = 50;
 
     setSpeedForAllServos(servoSpeed);
-    
-    Serial.write("pu");
-    Servo1.startEaseTo(servo1num + movingGap);
-    Servo2.startEaseTo(servo2num + movingGap);
-    delay(movingGap * 1000./servoSpeed);
-    Serial.write("ru");
-    Servo1.startEaseTo(servo1num);
-    Servo2.startEaseTo(servo2num);
-    delay(movingGap * 1000./servoSpeed);
+    Serial.write("purupuru");
+    for (int i = 0; i < 5; ++i) {
+        Serial.write("pu");
+        Servo1.startEaseTo(servo1num + movingGapver);
+        Servo2.startEaseTo(servo2num + movingGap);
+        delay(movingGapver * 1000/servoSpeed);
+
+        Serial.write("ru");
+        Servo1.startEaseTo(servo1num);
+        Servo2.startEaseTo(servo2num);
+        delay(movingGapver * 1000/servoSpeed);
+        
+    }
 }
 
-void performservoActions(int servo1Pre, int servo2Pre, int servo1Post, int servo2Post) {
-    Servo1.setEasingType(EASE_QUADRATIC_IN_OUT);
-    Servo2.setEasingType(EASE_QUADRATIC_IN_OUT);
-    int servoSpeed = 47;
-    int movingGap1 = servo1Pre - servo1Post;
-    int movingGap2 = servo2Pre - servo2Post;
-
-    int largerMovingGap = (movingGap1 > movingGap2) ? movingGap1 : movingGap2;
-
-    Servo1.startEaseTo(servo1Post);
-    Servo2.startEaseTo(servo2Post);
-
-    delay(largerMovingGap * 1000 / servoSpeed);
-
-    servo1CurrentPos = servo1Post;
-    servo2CurrentPos = servo2Post;
+void DCmoter(int speed){
+  analogWrite(DC_MOTERPIN, speed);
 }
 
-void oscConnect()
-{
-  WiFi.config(ip, gateway, subnet);
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  M5.Lcd.println("");
-  M5.Lcd.println("WiFi connected.");
-  M5.Lcd.println("IP address: ");
-  M5.Lcd.println(WiFi.localIP());
-  M5.Lcd.println("Gateway address: ");
-  M5.Lcd.println(WiFi.gatewayIP());
-  M5.Lcd.println("Subnet address: ");
-  M5.Lcd.println(WiFi.subnetMask());
-
-  Serial.println("");
-  Serial.println("WiFi connected.");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-  Serial.println("Gateway address: ");
-  Serial.println(WiFi.gatewayIP());
-  Serial.println("Subnet address: ");
-  Serial.println(WiFi.subnetMask());
-
-  OscWiFi.subscribe(port, "/light1/servo1/angle", [&](int i)
-  {
-    oscServo1Pos = i; //値をoscServo1Posに代入
-    oscDataReceived = true;
-    delay(10);            
-  });
-
-
-  OscWiFi.subscribe(port, "/light1/servo2/angle", [&](int i)
-  {
-    speed = i; //値をoscServo2Posに代入
-    oscDataReceived = true; 
-    delay(10);             
-  });
-}
 
 void setup() {
     M5.begin();
-    M5.Power.begin();  // Init Power module
+      Serial.begin(115200);
 
     Serial.begin(115200);
-
-    WiFi.begin(ssid, pwd);
-    oscConnect();
 
     Servo1.attachWithTrim(SERVO1_PIN, 0, START_DEGREE_VALUE, DEFAULT_MICROSECONDS_FOR_0_DEGREE, DEFAULT_MICROSECONDS_FOR_180_DEGREE);
 
@@ -151,63 +71,10 @@ void setup() {
 }
 
 
-void nonBlockingDelay(unsigned long interval) {
-  unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval) {
-    previousMillis = currentMillis;
-  }
-}
-
-int calculateAverage(const std::vector<int>& data) {
-    int sum = 0;
-    for (int value : data) {
-        sum += value;
-    }
-    return data.empty() ? 0 : sum / data.size();
-}
-
-
-
-void sendAverage(){
-    int RangeInCentimeters = ultrasonic.MeasureInCentimeters();
-  Serial.print("current_value");
-    Serial.println(RangeInCentimeters);
-
-    data_list.push_back(RangeInCentimeters);
-        // リストが30個以上になったら古い値から削除
-        if (data_list.size() > 30) {
-            data_list.erase(data_list.begin());
-        }
-        // 平均値を計算
-        int average_centimeters = calculateAverage(data_list);
-        Serial.print("average_centimeters");
-        Serial.println(average_centimeters);
-        sendOSCData(average_centimeters);
-        nonBlockingDelay(50000);
-}
-
-
 void loop() {
-  OscWiFi.update(); // 自動的に送受信するために必須
-  sendAverage();
-  Serial.println();
-  Serial.print(oscDataReceived);
-  Serial.print(" ");
-  Serial.print(servo1CurrentPos);
-  Serial.print(" ");
-  Serial.println(servo2CurrentPos);
-  if (!oscDataReceived) {
-      // If OSC data has not been received, continue performing purupuru
-      performpurupuru(servo1CurrentPos, servo1CurrentPos, speed);
-  } else {
-      // Call receiveOSCData to get the new positions
-      // receiveOSCData();
-      
-        
-      // Perform servo actions with new positions
-      performservoActions(servo1CurrentPos, servo2CurrentPos, oscServo1Pos, oscServo2Pos);
-
-      // Reset the flag after performing servo actions
-      oscDataReceived = false;
-  }
-}
+    int RangeInCentimeters = ultrasonic.MeasureInCentimeters();
+    
+        // If OSC data has not been received, continue performing purupuru
+        performpurupuru(40,40);
+    }
+    
