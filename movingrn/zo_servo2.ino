@@ -94,19 +94,15 @@ void nonBlockingDelay(unsigned long interval) {
 }
 
 void DCmotorWithUpDown() {
-    while (true) {
-        for (int i = 0; i <= 255; ++i) {
-            analogWrite(DC_MOTOR_PIN, i);
-            delay(10); // 適切な遅延時間を設定してください
-        }
-        
-        for (int i = 255; i >= 0; --i) {
-            analogWrite(DC_MOTOR_PIN, i);
-            delay(10); // 適切な遅延時間を設定してください
-        }
-    }
-}
+  int randomRepeats = random(5, 50);  // Generate a random number of repeats between 5 and 20
 
+  for (int i = 0; i < randomRepeats; ++i) {
+    analogWrite(DC_MOTOR_PIN, 100);
+    delay(100);
+  }
+
+  delay(5000);
+}
 void loop() {
     OscWiFi.update();
 
