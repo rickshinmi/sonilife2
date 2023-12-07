@@ -104,15 +104,7 @@ void DCmotorWithUpDown() {
 
   delay(5000);
 }
-void loop() {
-    OscWiFi.update();
 
-    if (oscDataReceived) {
-        DCmotor(oscServo1Pos);
-        lastOscDataTime = millis();
-        oscDataReceived = false;
-    } else {
+void loop() {
       DCmotorWithUpDown();
-    }
-    
 }
