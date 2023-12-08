@@ -26,8 +26,8 @@ bool oscDataReceived = false;
 
 
 void performpurupuru(int servo1num, int servo2num) {
-    Servo1.setEasingType(EASE_CUBIC_IN_OUT);
-    Servo2.setEasingType(EASE_CUBIC_IN_OUT);
+    Servo1.setEasingType(EASE_CUBIC_OUT);
+    Servo2.setEasingType(EASE_CUBIC_OUT);
     int servoSpeed = 180;
     int movingGap = 10;
 
