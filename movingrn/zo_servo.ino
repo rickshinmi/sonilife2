@@ -33,15 +33,20 @@ void performpurupuru(int servo1num, int servo2num) {
 
     setSpeedForAllServos(servoSpeed);
     Serial.write("purupuru");
-    for (int i = 0; i < random(5,20); ++i) {
-        Serial.write("pu");
-        Servo1.startEaseTo(servo1num + movingGap);
-        Servo2.startEaseTo(servo2num + movingGap);
-        delay(movingGap * 1000/servoSpeed);
-        Serial.write("ru");
-        Servo1.startEaseTo(servo1num);
-        Servo2.startEaseTo(servo2num);
-        delay(movingGap * 1000/servoSpeed);
+
+    while (servoSpeed >= 0) {
+        for (int i = 0; i < random(5, 20); ++i) {
+            Serial.write("pu");
+            Servo1.startEaseTo(servo1num + movingGap);
+            Servo2.startEaseTo(servo2num + movingGap);
+            delay(movingGap * 1000 / servoSpeed);
+            Serial.write("ru");
+            Servo1.startEaseTo(servo1num);
+            Servo2.startEaseTo(servo2num);
+            delay(movingGap * 1000 / servoSpeed);
+        }
+
+        servoSpeed -= 20;
     }
 }
 
