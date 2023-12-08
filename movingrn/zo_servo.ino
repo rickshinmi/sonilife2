@@ -29,7 +29,7 @@ void performpurupuru(int servo1num, int servo2num) {
     Servo1.setEasingType(EASE_CUBIC_IN_OUT);
     Servo2.setEasingType(EASE_CUBIC_IN_OUT);
     int servoSpeed = 180;
-    int movingGap = 20;
+    int movingGap = 10;
 
     setSpeedForAllServos(servoSpeed);
     Serial.write("purupuru");
@@ -75,6 +75,6 @@ void setup() {
 
 void loop() {
     performpurupuru(40,40);
-    delay(random(5000,10000))
+    delay(random(5000,10000));
     }
     
