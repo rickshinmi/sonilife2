@@ -4,7 +4,7 @@
 #include <ArduinoOSCWiFi.h>
 #include "Ultrasonic.h"
 
-#define SERVO1_PIN  5
+#define SERVO1_PIN  5 //サーボのピン1
 #define SERVO2_PIN 18
 #define SERVO3_PIN 19
 #define DC_MOTERPIN 12
