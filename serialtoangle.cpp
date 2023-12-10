@@ -19,7 +19,7 @@ int servo2CurrentPos = 40;
 void performservoActions(int servo1Pre, int servo2Pre, int servo1Post, int servo2Post) {
     Servo1.setEasingType(EASE_QUADRATIC_IN_OUT);
     Servo2.setEasingType(EASE_QUADRATIC_IN_OUT);
-    int servoSpeed = 20;
+    int servoSpeed = 20; //ここでスピードを調整
     int movingGap1 = servo1Pre - servo1Post;
     int movingGap2 = servo2Pre - servo2Post;
 
@@ -49,17 +49,67 @@ void setup() {
         }
     }
 }
-
-
 void loop() {
+// 変数の宣言
+int receivedValue1 = 0;
+int receivedValue2 = 0;
+char previousChar = '\0';
+bool newvaluerecieved = false;
 
-    // シリアルデータを受信する
-  if (Serial.available() > 0) {
+if (Serial.available() > 0) {
     while (Serial.available() > 0) {
-     int receivedChar = Serial.read();
-    performservoActions(servo1CurrentPos, servo2CurrentPos, receivedChar, receivedChar);
-      delay(200);
-      M5.Lcd.println(receivedChar);
+        char receivedChar = Serial.read();
+
+        // 直前の値と異なる場合にフラグを立てる
+        if (receivedChar != previousChar) {
+            newvaluerecieved = true;
+            previousChar = receivedChar;
+            // ここで新しい文字が受信されたときに実行する処理
+            // 例えば、数値を格納するなど
+        }
+
+        // ここで受信した値を利用する処理を追加
+        // 注意: この行では受信した文字ではなく、前回の文字を使っています
+
+        // 新しい値が受信された場合
+        if (newvaluerecieved) {
+            // 文字列を構築する
+            String receivedString;
+            receivedString += receivedChar;
+
+            // 次の文字があるか確認
+            while (Serial.available() > 0) {
+                receivedChar = Serial.read();
+                if (receivedChar == ' ') {
+                    // 半角スペースが来たら数値1の終わり
+                    break;
+                }
+                receivedString += receivedChar;
+            }
+
+            // 文字列を数値に変換
+            receivedValue1 = receivedString.toInt();
+
+            // 次の数値（数値2）を取得
+            receivedString = "";
+            while (Serial.available() > 0) {
+                receivedChar = Serial.read();
+                if (receivedChar == '\n') {
+                    // 改行が来たら終了
+                    break;
+                }
+                receivedString += receivedChar;
+            }
+
+            // 文字列を数値に変換
+            receivedValue2 = receivedString.toInt();
+            performservoActions(servo1CurrentPos, servo2CurrentPos, receivedValue1, receivedValue2);
+            newvaluerecieved = false;
+        }
+
+        delay(200);
     }
-  } 
 }
+
+}
+
